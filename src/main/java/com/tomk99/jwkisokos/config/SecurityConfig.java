@@ -16,7 +16,7 @@ public class SecurityConfig {
     @Value("${app.frontend.url.production}")
     private String productionFrontendUrl;
 
-    @Value("${spring.profiles.active:default}")
+    @Value("${spring.profiles.active}")
     private String activeProfile;
 
     @Bean
