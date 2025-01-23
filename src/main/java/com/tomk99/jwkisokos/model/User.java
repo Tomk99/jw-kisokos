@@ -1,23 +1,18 @@
 package com.tomk99.jwkisokos.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
+import jakarta.persistence.*;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Entity
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Table(name = "t_user")
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String email;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
     private String name;
-    private String picture;
+    private String email;
+    private boolean isAllowed;
+    private boolean isAdmin;
 }

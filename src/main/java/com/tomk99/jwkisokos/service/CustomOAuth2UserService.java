@@ -2,42 +2,36 @@ package com.tomk99.jwkisokos.service;
 
 import com.tomk99.jwkisokos.model.User;
 import com.tomk99.jwkisokos.repository.UserRepository;
-import org.springframework.security.oauth2.core.user.OAuth2User;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
-public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
+@RequiredArgsConstructor
+public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     private final UserRepository userRepository;
 
-    public CustomOAuth2UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
-
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) {
-        OAuth2User oAuth2User = new DefaultOAuth2UserService().loadUser(userRequest);
+        OAuth2User oAuth2User = super.loadUser(userRequest);
 
+        // Get user information from OAuth2 response
         String email = oAuth2User.getAttribute("email");
         String name = oAuth2User.getAttribute("name");
-        String picture = oAuth2User.getAttribute("picture");
 
-        Optional<User> userOptional = userRepository.findByEmail(email);
-        User user;
-        if (userOptional.isEmpty()) {
-            user = new User();
-            user.setEmail(email);
-        } else {
-            user = userOptional.get();
-        }
-        user.setName(name);
-        user.setPicture(picture);
-        userRepository.save(user);
+        // Check if user exists in the database
+        User user = userRepository.findByEmail(email).orElseGet(() -> {
+            // Create a new user if not found
+            User newUser = new User();
+            newUser.setName(name);
+            newUser.setEmail(email);
+            newUser.setAllowed(false);
+            newUser.setAdmin(false);
+            return userRepository.save(newUser);
+        });
 
         return oAuth2User;
     }
