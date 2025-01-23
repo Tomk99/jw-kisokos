@@ -18,7 +18,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, CustomOAuth2UserService customOAuth2UserService) throws Exception {
-        return http
+        http
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(registry -> {
@@ -29,9 +29,15 @@ public class SecurityConfig {
                         .userInfoEndpoint(userInfo -> userInfo
                                 .userService(customOAuth2UserService))
                         .defaultSuccessUrl("https://jw-kisokos.vercel.app/main", true)
-                        .failureUrl("/login?error"))
-                .build();
+                        .failureUrl("/login?error")
+                );
+
+        // Naplózás a sikeres konfigurációhoz
+        System.out.println("SecurityFilterChain configured successfully!");
+
+        return http.build();
     }
+
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
@@ -41,8 +47,12 @@ public class SecurityConfig {
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
 
+        // Naplózás a CORS konfigurációhoz
+        System.out.println("CORS configuration applied!");
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
+
 }
