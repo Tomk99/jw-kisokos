@@ -18,7 +18,7 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth -> oauth
-                        .defaultSuccessUrl("/main", true)
+                        .defaultSuccessUrl("https://jw-kisokos.vercel.app/main", true)
                 );
 
         return http.build();
