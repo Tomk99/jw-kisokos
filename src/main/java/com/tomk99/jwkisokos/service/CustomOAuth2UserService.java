@@ -1,4 +1,4 @@
-package com.tomk99.jwkisokos.config.service;
+package com.tomk99.jwkisokos.service;
 
 import com.tomk99.jwkisokos.model.User;
 import com.tomk99.jwkisokos.repository.UserRepository;
