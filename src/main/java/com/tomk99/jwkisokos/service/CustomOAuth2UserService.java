@@ -28,18 +28,16 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         String picture = oAuth2User.getAttribute("picture");
 
         Optional<User> userOptional = userRepository.findByEmail(email);
+        User user;
         if (userOptional.isEmpty()) {
-            User user = new User();
+            user = new User();
             user.setEmail(email);
-            user.setName(name);
-            user.setPicture(picture);
-            userRepository.save(user);
         } else {
-            User user = userOptional.get();
-            user.setName(name);
-            user.setPicture(picture);
-            userRepository.save(user);
+            user = userOptional.get();
         }
+        user.setName(name);
+        user.setPicture(picture);
+        userRepository.save(user);
 
         return oAuth2User;
     }
